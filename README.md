@@ -24,6 +24,12 @@ https://github.com/Muhammad-Noman59/Tic-Tac-Toe-Game/assets/164490322/6dec6282-3
 - Kotlin
 - Android Studio
 
+  ## Download APK
+
+You can download the APK from the links below:
+
+- [Download APK](https://github.com/Muhammad-Noman59/Tic-Tac-Toe-Game/releases/download/1.1/Tic.Tac.Toe.apk)
+
 
 ## Getting Started
 
