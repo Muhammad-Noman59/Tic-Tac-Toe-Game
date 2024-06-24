@@ -227,7 +227,7 @@ fun WinDiagonalLine1() {
 }
 
 
-
+@Preview
 @Composable
 fun WinDiagonalLine2() {
 

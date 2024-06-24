@@ -1,0 +1,196 @@
+package com.example.myapplicationtictactoegame
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+
+class GameViewModel : ViewModel() {
+
+    var state by mutableStateOf(GameStates())
+
+    val boardItems: MutableMap<Int, BordCellValue> = mutableMapOf(
+
+        1 to BordCellValue.NONE,
+        2 to BordCellValue.NONE,
+        3 to BordCellValue.NONE,
+        4 to BordCellValue.NONE,
+        5 to BordCellValue.NONE,
+        6 to BordCellValue.NONE,
+        7 to BordCellValue.NONE,
+        8 to BordCellValue.NONE,
+        9 to BordCellValue.NONE
+    )
+
+
+    fun onAction(actions: UserActions) {
+
+        when (actions) {
+            is UserActions.BoardTaped -> {
+
+                addValuesToBoard(actions.cellNo)
+            }
+
+            UserActions.PlayAgainButtonClicked -> {
+                gameReset()
+            }
+        }
+    }
+
+    private fun gameReset() {
+        boardItems.forEach { (i, boardCellValue) ->
+
+            boardItems[i] = BordCellValue.CIRCLE
+        }
+
+        state = state.copy(
+            hintText = "Player 'O' Turn",
+            currentTurn = BordCellValue.CIRCLE
+        )
+    }
+
+    private fun addValuesToBoard(cellNo: Int) {
+
+        if (boardItems[cellNo] != BordCellValue.NONE) {
+            return
+        }
+
+        if (state.currentTurn == BordCellValue.CIRCLE) {
+            boardItems[cellNo] = BordCellValue.CIRCLE
+
+            if (checkForVictory(BordCellValue.CIRCLE)){
+
+                state = state.copy(
+
+                    hintText = "Player 'O' Won",
+                    playerCircleCount = state.playerCircleCount +1,
+                    currentTurn = BordCellValue.NONE,
+                    hasWon = true
+                )
+            }else if (hesBoardFull()) {
+
+                    state = state.copy(
+                        hintText = "Game Draw",
+                        drawCount = state.drawCount + 1
+                    )
+                } else {
+                    state = state.copy(
+                        hintText = "Player 'O' : Turn",
+                        currentTurn = BordCellValue.CROSS
+                    )
+                }
+
+        } else if (state.currentTurn == BordCellValue.CROSS) {
+
+            boardItems[cellNo] = BordCellValue.CROSS
+
+            if (checkForVictory(BordCellValue.CROSS)){
+
+                state = state.copy(
+
+                    hintText = "Player 'X' Won",
+                    playerCrossCount = state.playerCrossCount +1,
+                    currentTurn = BordCellValue.NONE,
+                    hasWon = true
+                )
+            }else if (hesBoardFull()) {
+
+                state = state.copy(
+                    hintText = "Game Draw",
+                    drawCount = state.drawCount + 1
+                )
+            } else {
+
+                state = state.copy(
+                    hintText = "Player 'O' : Turn",
+                    currentTurn = BordCellValue.CROSS
+                )
+            }
+
+        }
+    }
+
+    private fun checkForVictory(boardValue: BordCellValue): Boolean {
+
+        when {
+            boardItems[1] == boardValue && boardItems[2] == boardValue && boardItems[3] == boardValue -> {
+
+                state = state.copy(
+                    victoryType = VictoryTypeValue.HORIZONTAL1
+                )
+                return true
+            }
+
+            boardItems[4] == boardValue && boardItems[5] == boardValue && boardItems[6] == boardValue -> {
+
+                state = state.copy(
+                    victoryType = VictoryTypeValue.HORIZONTAL2
+                )
+                return true
+            }
+
+
+            boardItems[7] == boardValue && boardItems[8] == boardValue && boardItems[9] == boardValue -> {
+
+                state = state.copy(
+                    victoryType = VictoryTypeValue.HORIZONTAL3
+                )
+                return true
+            }
+
+
+            boardItems[1] == boardValue && boardItems[4] == boardValue && boardItems[7] == boardValue -> {
+
+                state = state.copy(
+                    victoryType = VictoryTypeValue.VERTICAL1
+                )
+                return true
+            }
+
+
+            boardItems[2] == boardValue && boardItems[5] == boardValue && boardItems[8] == boardValue -> {
+
+                state = state.copy(
+                    victoryType = VictoryTypeValue.VERTICAL2
+                )
+                return true
+            }
+
+
+            boardItems[3] == boardValue && boardItems[6] == boardValue && boardItems[9] == boardValue -> {
+
+                state = state.copy(
+                    victoryType = VictoryTypeValue.VERTICAL3
+                )
+                return true
+            }
+
+
+            boardItems[1] == boardValue && boardItems[5] == boardValue && boardItems[9] == boardValue -> {
+
+                state = state.copy(
+                    victoryType = VictoryTypeValue.DIAGONAL1
+                )
+                return true
+            }
+
+
+            boardItems[3] == boardValue && boardItems[5] == boardValue && boardItems[7] == boardValue -> {
+
+                state = state.copy(
+                    victoryType = VictoryTypeValue.DIAGONAL2
+                )
+                return true
+            }
+
+            else -> return false
+        }
+
+    }
+
+    private fun hesBoardFull(): Boolean {
+
+        if (boardItems.containsValue(BordCellValue.NONE)) return false
+        return true
+    }
+}

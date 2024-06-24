@@ -1,6 +1,11 @@
 package com.example.myapplicationtictactoegame.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +14,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,12 +34,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplicationtictactoegame.BordCellValue
+import com.example.myapplicationtictactoegame.GameViewModel
+import com.example.myapplicationtictactoegame.UserActions
 import com.example.myapplicationtictactoegame.ui.theme.BlueCustom
 import com.example.myapplicationtictactoegame.ui.theme.GrayBackground
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun GameScreen() {
+fun GameScreen(
+    viewModel: GameViewModel
+) {
+
+    val state = viewModel.state
 
     Column(
         modifier = Modifier
@@ -50,21 +63,21 @@ fun GameScreen() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Player 'o' : 0",
+                text = "Player 'O' : ${state.playerCircleCount}",
                 style = TextStyle(
                     fontSize = 16.sp
                 )
             )
 
             Text(
-                text = "Draw : 0",
+                text = "Draw : ${state.drawCount}",
                 style = TextStyle(
                     fontSize = 16.sp
                 )
             )
 
             Text(
-                text = "Player 'x' : 0",
+                text = "Player 'X' : ${state.playerCrossCount}",
                 style = TextStyle(
                     fontSize = 16.sp
                 )
@@ -96,6 +109,49 @@ fun GameScreen() {
             contentAlignment = Alignment.Center
         ) {
             BoardBase()
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .aspectRatio(1f)
+
+            ) {
+                viewModel.boardItems.forEach{ (cellNo, boardCellValue) ->
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(1f)
+                                .clickable(
+                                    interactionSource = MutableInteractionSource(),
+                                    indication = null
+                                ) {
+                                    viewModel.onAction(
+                                        UserActions.BoardTaped(
+                                            cellNo = cellNo
+                                        )
+                                    )
+                                },
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            AnimatedVisibility(
+                                visible = viewModel.boardItems[cellNo] != BordCellValue.NONE,
+                                enter = scaleIn(tween(1000))
+                            ) {
+
+                                if ( boardCellValue == BordCellValue.CIRCLE ){
+                                    Circle()
+                                } else if (boardCellValue == BordCellValue.CROSS){
+                                    Cross()
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -105,7 +161,7 @@ fun GameScreen() {
             verticalAlignment = Alignment.CenterVertically
         ){
             Text(
-                text = "Player 'o' turn",
+                text = state.hintText,
                 style = TextStyle(
                     fontSize = 24.sp,
                     fontStyle = FontStyle.Italic
@@ -115,6 +171,9 @@ fun GameScreen() {
             Button(
                 onClick = {
 
+                    viewModel.onAction(
+                        UserActions.PlayAgainButtonClicked
+                    )
                 },
                 shape = RoundedCornerShape(5.dp),
                 elevation = ButtonDefaults.buttonElevation(5.dp),
