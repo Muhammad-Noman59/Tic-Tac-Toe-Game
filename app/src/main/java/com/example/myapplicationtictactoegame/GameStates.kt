@@ -4,7 +4,7 @@ data class GameStates (
     val playerCircleCount : Int = 0,
     val playerCrossCount : Int = 0,
     val drawCount : Int = 0,
-    val hintText : String = "Player 'O' Turn",
+    val hintText : String = "Player 'O' : Turn",
     val currentTurn : BordCellValue = BordCellValue.CIRCLE,
     val hasWon : Boolean = false,
     val victoryType : VictoryTypeValue = VictoryTypeValue.NONE

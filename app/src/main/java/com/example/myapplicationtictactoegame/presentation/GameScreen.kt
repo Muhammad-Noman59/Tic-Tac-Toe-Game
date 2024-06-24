@@ -2,6 +2,8 @@ package com.example.myapplicationtictactoegame.presentation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,8 +37,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplicationtictactoegame.BordCellValue
+import com.example.myapplicationtictactoegame.GameStates
 import com.example.myapplicationtictactoegame.GameViewModel
 import com.example.myapplicationtictactoegame.UserActions
+import com.example.myapplicationtictactoegame.VictoryTypeValue
 import com.example.myapplicationtictactoegame.ui.theme.BlueCustom
 import com.example.myapplicationtictactoegame.ui.theme.GrayBackground
 
@@ -96,14 +100,15 @@ fun GameScreen(
         )
 
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .aspectRatio(1f)
                 .shadow(
                     elevation = 12.dp,
                     shape = RoundedCornerShape(22.dp)
                 )
                 .clip(
-                   shape =  RoundedCornerShape(22.dp)
+                    shape = RoundedCornerShape(22.dp)
                 )
                 .background(color = GrayBackground),
             contentAlignment = Alignment.Center
@@ -150,8 +155,29 @@ fun GameScreen(
 
                         }
                     }
+
+                }
+
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                AnimatedVisibility(
+                    visible = state.hasWon,
+                    enter = fadeIn(tween(2000))
+                ) {
+                    DrawVictoryLine(states = state)
                 }
             }
+
+
+
+
         }
 
 
@@ -191,5 +217,22 @@ fun GameScreen(
             }
         }
 
+    }
+}
+
+@Composable
+fun DrawVictoryLine(
+    states: GameStates
+) {
+    when(states.victoryType){
+        VictoryTypeValue.NONE ->{}
+        VictoryTypeValue.HORIZONTAL1 -> WinHorizontalLine1()
+        VictoryTypeValue.HORIZONTAL2 -> WinHorizontalLine2()
+        VictoryTypeValue.HORIZONTAL3 -> WinHorizontalLine3()
+        VictoryTypeValue.VERTICAL1 -> WinVerticalLine1()
+        VictoryTypeValue.VERTICAL2 -> WinVerticalLine2()
+        VictoryTypeValue.VERTICAL3 -> WinVerticalLine3()
+        VictoryTypeValue.DIAGONAL1 -> WinDiagonalLine1()
+        VictoryTypeValue.DIAGONAL2 -> WinDiagonalLine2()
     }
 }

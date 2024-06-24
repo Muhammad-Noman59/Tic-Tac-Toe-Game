@@ -40,12 +40,14 @@ class GameViewModel : ViewModel() {
     private fun gameReset() {
         boardItems.forEach { (i, boardCellValue) ->
 
-            boardItems[i] = BordCellValue.CIRCLE
+            boardItems[i] = BordCellValue.NONE
         }
 
         state = state.copy(
-            hintText = "Player 'O' Turn",
-            currentTurn = BordCellValue.CIRCLE
+            hintText = "Player 'O' : Turn",
+            currentTurn = BordCellValue.CIRCLE,
+            hasWon = false,
+            victoryType = VictoryTypeValue.NONE
         )
     }
 
@@ -75,7 +77,7 @@ class GameViewModel : ViewModel() {
                     )
                 } else {
                     state = state.copy(
-                        hintText = "Player 'O' : Turn",
+                        hintText = "Player 'X' : Turn",
                         currentTurn = BordCellValue.CROSS
                     )
                 }
@@ -103,7 +105,7 @@ class GameViewModel : ViewModel() {
 
                 state = state.copy(
                     hintText = "Player 'O' : Turn",
-                    currentTurn = BordCellValue.CROSS
+                    currentTurn = BordCellValue.CIRCLE
                 )
             }
 
