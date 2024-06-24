@@ -1,11 +1,13 @@
-package com.example.myapplicationtictactoegame
+package com.example.myapplicationtictactoegame.state_and_user_actions
 
 data class GameStates (
     val playerCircleCount : Int = 0,
     val playerCrossCount : Int = 0,
     val drawCount : Int = 0,
-    val hintText : String = "Player 'O' : Turn",
+    val currentPlayer : Boolean = true,
+    val gameDraw : Boolean = false,
     val currentTurn : BordCellValue = BordCellValue.CIRCLE,
+    val winner : String? = null,
     val hasWon : Boolean = false,
     val victoryType : VictoryTypeValue = VictoryTypeValue.NONE
 )

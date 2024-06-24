@@ -1,9 +1,13 @@
-package com.example.myapplicationtictactoegame
+package com.example.myapplicationtictactoegame.presentation.view_model
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.myapplicationtictactoegame.state_and_user_actions.BordCellValue
+import com.example.myapplicationtictactoegame.state_and_user_actions.GameStates
+import com.example.myapplicationtictactoegame.state_and_user_actions.UserActions
+import com.example.myapplicationtictactoegame.state_and_user_actions.VictoryTypeValue
 
 class GameViewModel : ViewModel() {
 
@@ -44,9 +48,10 @@ class GameViewModel : ViewModel() {
         }
 
         state = state.copy(
-            hintText = "Player 'O' : Turn",
+            currentPlayer = true,
             currentTurn = BordCellValue.CIRCLE,
             hasWon = false,
+            gameDraw = false,
             victoryType = VictoryTypeValue.NONE
         )
     }
@@ -64,7 +69,7 @@ class GameViewModel : ViewModel() {
 
                 state = state.copy(
 
-                    hintText = "Player 'O' Won",
+                    winner = "Player 'O' is Winner 😍",
                     playerCircleCount = state.playerCircleCount +1,
                     currentTurn = BordCellValue.NONE,
                     hasWon = true
@@ -72,12 +77,12 @@ class GameViewModel : ViewModel() {
             }else if (hesBoardFull()) {
 
                     state = state.copy(
-                        hintText = "Game Draw",
+                        gameDraw = true,
                         drawCount = state.drawCount + 1
                     )
                 } else {
                     state = state.copy(
-                        hintText = "Player 'X' : Turn",
+                        currentPlayer = false,
                         currentTurn = BordCellValue.CROSS
                     )
                 }
@@ -90,7 +95,7 @@ class GameViewModel : ViewModel() {
 
                 state = state.copy(
 
-                    hintText = "Player 'X' Won",
+                    winner = "Player 'X' is Winner 😍",
                     playerCrossCount = state.playerCrossCount +1,
                     currentTurn = BordCellValue.NONE,
                     hasWon = true
@@ -98,13 +103,13 @@ class GameViewModel : ViewModel() {
             }else if (hesBoardFull()) {
 
                 state = state.copy(
-                    hintText = "Game Draw",
+                    gameDraw = true,
                     drawCount = state.drawCount + 1
                 )
             } else {
 
                 state = state.copy(
-                    hintText = "Player 'O' : Turn",
+                    currentPlayer = true,
                     currentTurn = BordCellValue.CIRCLE
                 )
             }

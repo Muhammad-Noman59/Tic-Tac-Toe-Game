@@ -1,4 +1,4 @@
-package com.example.myapplicationtictactoegame
+package com.example.myapplicationtictactoegame.state_and_user_actions
 
 sealed class UserActions {
 
